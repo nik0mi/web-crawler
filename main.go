@@ -22,28 +22,31 @@ func main() {
 	// fmt.Println("Введите запрос:")
 	// scanner := bufio.NewReader(os.Stdin)
 	// query, _ := scanner.ReadString('\n')
-	// fmt.Println(query)
 	var buf1 []byte
 	var buf2 []byte
 	var buf3 []byte
 	var res string
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate("https://www.youtube.com/"),
-		// chromedp.Text("#video-title", &res, chromedp.ByQuery),
-		chromedp.Focus("input[name=search_query]", chromedp.ByQuery),
-		chromedp.SendKeys("input[name=search_query]", "some", chromedp.ByQuery),
-		chromedp.Screenshot("ytd-app", &buf1, chromedp.ByQuery),
-		chromedp.KeyEvent(kb.Enter),
-		chromedp.WaitVisible("button[aria-label=\"Search filters\"]", chromedp.ByQuery),
 		a,
-		chromedp.Screenshot("ytd-app", &buf2, chromedp.ByQuery),
+		chromedp.Focus("input[name=search_query]"),
+		a,
+		chromedp.SendKeys("input[name=search_query]", "test", chromedp.ByQuery),
+		a,
+		chromedp.CaptureScreenshot(&buf1),
+		a,
+		chromedp.KeyEvent(kb.Enter),
+		a,
+		chromedp.WaitVisible("yt-touch-feedback-shape", chromedp.ByQuery),
+		a,
+		chromedp.CaptureScreenshot(&buf2),
+		a,
+		chromedp.WaitVisible("ytd-app", chromedp.ByQuery),
 		a,
 		chromedp.Text("#video-title", &res, chromedp.ByQuery),
 		a,
-		chromedp.Screenshot("ytd-app", &buf3, chromedp.ByQuery),
+		chromedp.CaptureScreenshot(&buf3),
 		a,
-		// chromedp.Screenshot(".style-scope ytd-masthead", &buf),
-		// chromedp.SendKeys("input[name=search_query]", "s"),
 	); err != nil {
 		log.Fatal(err)
 	}
