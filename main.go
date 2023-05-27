@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
+	"time"
 
 	"github.com/chromedp/chromedp"
 	"github.com/chromedp/chromedp/kb"
@@ -16,41 +18,42 @@ func foo(context.Context) error {
 }
 
 func main() {
-	var a chromedp.ActionFunc = foo
+	// var a chromedp.ActionFunc = foo
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 	// fmt.Println("Введите запрос:")
 	// scanner := bufio.NewReader(os.Stdin)
 	// query, _ := scanner.ReadString('\n')
+	var query string
+	fmt.Println("Введите запрос:")
+	fmt.Fscan(os.Stdin, &query)
 	var buf1 []byte
 	var buf2 []byte
 	var buf3 []byte
-	var res string
+	var res [3]string
+	title := [3]string{
+		fmt.Sprintf("#contents > ytd-rich-item-renderer:nth-child(%d) #video-title", 1),
+		fmt.Sprintf("#contents > ytd-rich-item-renderer:nth-child(%d) #video-title", 2),
+		fmt.Sprintf("#contents > ytd-rich-item-renderer:nth-child(%d) #video-title", 3),
+	}
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate("https://www.youtube.com/"),
-		a,
 		chromedp.Focus("input[name=search_query]"),
-		a,
-		chromedp.SendKeys("input[name=search_query]", "test", chromedp.ByQuery),
-		a,
+		chromedp.SendKeys("input[name=search_query]", query, chromedp.ByQuery),
+		chromedp.Text(title[0], &res[0]),
+		chromedp.Text(title[1], &res[1]),
+		chromedp.Text(title[2], &res[2]),
 		chromedp.CaptureScreenshot(&buf1),
-		a,
 		chromedp.KeyEvent(kb.Enter),
-		a,
-		chromedp.WaitVisible("yt-touch-feedback-shape", chromedp.ByQuery),
-		a,
+		chromedp.Sleep(time.Second*60),
 		chromedp.CaptureScreenshot(&buf2),
-		a,
-		chromedp.WaitVisible("ytd-app", chromedp.ByQuery),
-		a,
-		chromedp.Text("#video-title", &res, chromedp.ByQuery),
-		a,
-		chromedp.CaptureScreenshot(&buf3),
-		a,
 	); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(res)
+	fmt.Println("Названия первых трех видео:")
+	for i := 0; i < len(res); i++ {
+		fmt.Println(res[i])
+	}
 	save("screen1.png", buf1)
 	save("screen2.png", buf2)
 	save("screen3.png", buf3)
