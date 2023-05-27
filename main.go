@@ -20,7 +20,6 @@ func a(msg string) chromedp.ActionFunc {
 }
 
 func main() {
-	//var a chromedp.ActionFunc = foo
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 	// fmt.Println("Введите запрос:")
