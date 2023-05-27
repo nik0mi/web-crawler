@@ -60,7 +60,10 @@ func main() {
 	); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(res)
+	fmt.Println("Названия первых трех видео:")
+	for i := 0; i < 3; i++ {
+		fmt.Println(res[i])
+	}
 	save("screen1.png", buf1)
 	save("screen2.png", buf2)
 	save("screen3.png", buf3)
