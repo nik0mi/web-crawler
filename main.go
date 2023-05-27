@@ -5,28 +5,26 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"os"
 	"time"
 
 	"github.com/chromedp/chromedp"
 	"github.com/chromedp/chromedp/kb"
 )
 
-func foo(context.Context) error {
-	fmt.Println("HI")
-	return nil
+func a(msg string) chromedp.ActionFunc {
+	return func(context.Context) error {
+		fmt.Println(msg)
+		return nil
+	}
 }
 
 func main() {
-	// var a chromedp.ActionFunc = foo
+	var a chromedp.ActionFunc = foo
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 	// fmt.Println("Введите запрос:")
 	// scanner := bufio.NewReader(os.Stdin)
 	// query, _ := scanner.ReadString('\n')
-	var query string
-	fmt.Println("Введите запрос:")
-	fmt.Fscan(os.Stdin, &query)
 	var buf1 []byte
 	var buf2 []byte
 	var buf3 []byte
@@ -42,11 +40,9 @@ func main() {
 		chromedp.WaitReady("input[name=search_query]", chromedp.ByQuery),
 		chromedp.Sleep(2*time.Second),
 		chromedp.Focus("input[name=search_query]"),
-		chromedp.Sleep(2*time.Second),
-		chromedp.WaitReady("body", chromedp.ByQuery),
-		chromedp.WaitReady("input[name=search_query]", chromedp.ByQuery),
-		chromedp.SendKeys("input[name=search_query]", query, chromedp.ByQuery),
-		chromedp.Sleep(2*time.Second),
+		a,
+		chromedp.SendKeys("input[name=search_query]", "test", chromedp.ByQuery),
+		a,
 		chromedp.CaptureScreenshot(&buf1),
 		chromedp.WaitReady("body", chromedp.ByQuery),
 		chromedp.WaitReady("input[name=search_query]", chromedp.ByQuery),
@@ -55,17 +51,16 @@ func main() {
 		chromedp.WaitReady("body", chromedp.ByQuery),
 		chromedp.Sleep(20*time.Second),
 		chromedp.CaptureScreenshot(&buf2),
-		chromedp.Text(title[0], &res[0]),
-		chromedp.Text(title[1], &res[1]),
-		chromedp.Text(title[2], &res[2]),
+		a,
+		chromedp.WaitVisible("ytd-app", chromedp.ByQuery),
+		a,
+		chromedp.Text("#video-title", &res, chromedp.ByQuery),
+		a,
 		chromedp.CaptureScreenshot(&buf3),
 	); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Названия первых трех видео:")
-	for i := 0; i < len(res); i++ {
-		fmt.Println(res[i])
-	}
+	fmt.Println(res)
 	save("screen1.png", buf1)
 	save("screen2.png", buf2)
 	save("screen3.png", buf3)
