@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 	"time"
 
 	"github.com/chromedp/chromedp"
@@ -19,12 +20,15 @@ func a(msg string) chromedp.ActionFunc {
 }
 
 func main() {
-	var a chromedp.ActionFunc = foo
+	//var a chromedp.ActionFunc = foo
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 	// fmt.Println("Введите запрос:")
 	// scanner := bufio.NewReader(os.Stdin)
 	// query, _ := scanner.ReadString('\n')
+	var query string
+	fmt.Println("Введите запрос:")
+	fmt.Fscan(os.Stdin, &query)
 	var buf1 []byte
 	var buf2 []byte
 	var buf3 []byte
@@ -40,9 +44,7 @@ func main() {
 		chromedp.WaitReady("input[name=search_query]", chromedp.ByQuery),
 		chromedp.Sleep(2*time.Second),
 		chromedp.Focus("input[name=search_query]"),
-		a,
-		chromedp.SendKeys("input[name=search_query]", "test", chromedp.ByQuery),
-		a,
+		chromedp.SendKeys("input[name=search_query]", query, chromedp.ByQuery),
 		chromedp.CaptureScreenshot(&buf1),
 		chromedp.WaitReady("body", chromedp.ByQuery),
 		chromedp.WaitReady("input[name=search_query]", chromedp.ByQuery),
@@ -51,11 +53,10 @@ func main() {
 		chromedp.WaitReady("body", chromedp.ByQuery),
 		chromedp.Sleep(20*time.Second),
 		chromedp.CaptureScreenshot(&buf2),
-		a,
 		chromedp.WaitVisible("ytd-app", chromedp.ByQuery),
-		a,
-		chromedp.Text("#video-title", &res, chromedp.ByQuery),
-		a,
+		chromedp.Text(title[0], &res[0]),
+		chromedp.Text(title[1], &res[1]),
+		chromedp.Text(title[2], &res[2]),
 		chromedp.CaptureScreenshot(&buf3),
 	); err != nil {
 		log.Fatal(err)
