@@ -45,7 +45,7 @@ func main() {
 		chromedp.Sleep(2*time.Second),
 		chromedp.WaitReady("body", chromedp.ByQuery),
 		chromedp.WaitReady("input[name=search_query]", chromedp.ByQuery),
-		chromedp.SendKeys("input[name=search_query]", "test", chromedp.ByQuery),
+		chromedp.SendKeys("input[name=search_query]", query, chromedp.ByQuery),
 		chromedp.Sleep(2*time.Second),
 		chromedp.CaptureScreenshot(&buf1),
 		chromedp.WaitReady("body", chromedp.ByQuery),
