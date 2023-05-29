@@ -12,9 +12,9 @@ import (
 	"github.com/chromedp/chromedp/kb"
 )
 
-func a(msg string) chromedp.ActionFunc {
+func a(num int) chromedp.ActionFunc {
 	return func(context.Context) error {
-		fmt.Println(msg)
+		fmt.Println(num)
 		return nil
 	}
 }
@@ -38,21 +38,37 @@ func main() {
 		fmt.Sprintf("#contents > ytd-rich-item-renderer:nth-child(%d) #video-title", 3),
 	}
 	if err := chromedp.Run(ctx,
+		chromedp.Sleep(120*time.Second),
 		chromedp.Navigate("https://www.youtube.com/"),
+		a(1),
 		chromedp.Sleep(10*time.Second),
+		a(2),
+		chromedp.Sleep(60*time.Second),
 		chromedp.Focus("input[name=search_query]"),
+		chromedp.Sleep(60*time.Second),
+		a(3),
 		chromedp.SendKeys("input[name=search_query]", query, chromedp.ByQuery),
+		a(4),
 		chromedp.CaptureScreenshot(&buf1),
-		chromedp.Sleep(10*time.Second),
-		chromedp.WaitReady("input[name=search_query]", chromedp.ByQuery),
-		chromedp.Sleep(2*time.Second),
+		a(5),
+		chromedp.Sleep(120*time.Second),
+		a(6),
 		chromedp.KeyEvent(kb.Enter),
-		chromedp.Sleep(45*time.Second),
+		a(7),
+		chromedp.Sleep(120*time.Second),
+		a(8),
 		chromedp.CaptureScreenshot(&buf2),
+		a(9),
+		chromedp.Sleep(120*time.Second),
+		a(10),
 		chromedp.Text(title[0], &res[0]),
 		chromedp.Text(title[1], &res[1]),
 		chromedp.Text(title[2], &res[2]),
-		chromedp.CaptureScreenshot(&buf3),
+		a(11),
+		chromedp.Sleep(120*time.Second),
+		a(12),
+		chromedp.Screenshot("ytd-app", &buf3, chromedp.ByQuery),
+		a(13),
 	); err != nil {
 		log.Fatal(err)
 	}
